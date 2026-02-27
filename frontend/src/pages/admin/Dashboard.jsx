@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FaProjectDiagram, FaEnvelope, FaPlus, FaCog, FaInbox, FaEye } from 'react-icons/fa'
+import { FaProjectDiagram, FaEnvelope, FaPlus, FaCog, FaInbox, FaEye, FaEdit, FaTrash } from 'react-icons/fa'
 import { projectService, messageService } from '../../services/api'
+import { toast } from 'react-toastify'
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ projectCount: 0, messageCount: 0, unreadCount: 0 })
@@ -10,6 +11,44 @@ const Dashboard = () => {
   const [recentProjects, setRecentProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [isDark, setIsDark] = useState(true)
+  const navigate = useNavigate()
+
+  const handleDeleteProject = async (id, e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!window.confirm('Are you sure you want to delete this project?')) return
+    
+    try {
+      await projectService.delete(id)
+      toast.success('Project deleted!')
+      fetchData()
+    } catch (error) {
+      toast.error('Failed to delete project')
+    }
+  }
+
+  const fetchData = async () => {
+    try {
+      const [projectRes, messagesRes] = await Promise.all([
+        projectService.getAll(),
+        messageService.getAll()
+      ])
+      
+      const projects = projectRes.data
+      const messages = messagesRes.data
+      setStats({
+        projectCount: projects.length,
+        messageCount: messages.length,
+        unreadCount: messages.filter(m => !m.read).length
+      })
+      setRecentMessages(messages.slice(0, 5))
+      setRecentProjects(projects.slice(0, 5))
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
@@ -17,31 +56,6 @@ const Dashboard = () => {
       setIsDark(savedTheme === 'dark')
     } else {
       setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
-    }
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [projectRes, messagesRes] = await Promise.all([
-          projectService.getAll(),
-          messageService.getAll()
-        ])
-        
-        const projects = projectRes.data
-        const messages = messagesRes.data
-        setStats({
-          projectCount: projects.length,
-          messageCount: messages.length,
-          unreadCount: messages.filter(m => !m.read).length
-        })
-        setRecentMessages(messages.slice(0, 5))
-        setRecentProjects(projects.slice(0, 5))
-      } catch (error) {
-        console.error('Error fetching stats:', error)
-      } finally {
-        setLoading(false)
-      }
     }
     fetchData()
   }, [])
@@ -101,37 +115,36 @@ const Dashboard = () => {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className={`${bgCard} rounded-2xl p-6`}>
-              <h2 className={`text-xl font-semibold mb-6 ${textPrimary}`}>Quick Actions</h2>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {quickActions.map((action) => (
-                  <Link
-                    key={action.label}
-                    to={action.href}
-                    className="group p-4 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all text-center"
-                  >
-                    <div className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}>
-                      <action.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <span className={`text-sm font-medium ${isDark ? 'text-white/80' : 'text-gray-700'}`}>{action.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+        {/* Quick Actions */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {quickActions.map((action, index) => (
+            <motion.div
+              key={action.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Link
+                to={action.href}
+                className={`${bgCard} rounded-2xl p-6 flex items-center justify-between hover:border-purple-500/50 transition-colors block`}
+              >
+                <div>
+                  <p className={`font-medium ${textPrimary}`}>{action.label}</p>
+                </div>
+                <div className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center`}>
+                  <action.icon className="w-5 h-5 text-white" />
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
 
+        <div className="grid lg:grid-cols-2 gap-8">
           {/* Recent Messages */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.3 }}
           >
             <div className={`${bgCard} rounded-2xl p-6`}>
               <div className="flex justify-between items-center mb-6">
@@ -171,54 +184,71 @@ const Dashboard = () => {
               )}
             </div>
           </motion.div>
-        </div>
 
-        {/* Recent Projects Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8"
-        >
-          <div className={`${bgCard} rounded-2xl p-6`}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className={`text-xl font-semibold ${textPrimary}`}>Recent Projects</h2>
-              <Link
-                to="/admin/projects"
-                className="text-sm text-purple-500 hover:text-purple-400 flex items-center gap-1"
-              >
-                View All <FaEye className="w-3 h-3" />
-              </Link>
-            </div>
-            
-            {recentProjects.length === 0 ? (
-              <p className={`text-center py-8 ${textSecondary}`}>No projects yet</p>
-            ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {recentProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className={`p-4 rounded-xl ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}
+          {/* Recent Projects */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className={`${bgCard} rounded-2xl p-6`}>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${textPrimary}`}>Recent Projects</h2>
+                <div className="flex gap-2">
+                  <Link
+                    to="/admin/projects"
+                    className="text-sm text-purple-500 hover:text-purple-400 flex items-center gap-1"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center overflow-hidden">
-                        {project.image ? (
-                          <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <FaProjectDiagram className="w-5 h-5 text-white" />
-                        )}
+                    View All <FaEye className="w-3 h-3" />
+                  </Link>
+                </div>
+              </div>
+              
+              {recentProjects.length === 0 ? (
+                <p className={`text-center py-8 ${textSecondary}`}>No projects yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {recentProjects.map((project) => (
+                    <div
+                      key={project.id}
+                      className={`p-4 rounded-xl ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'} flex items-center justify-between`}
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center overflow-hidden">
+                          {project.image ? (
+                            <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <FaProjectDiagram className="w-5 h-5 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-medium text-sm truncate ${textPrimary}`}>{project.title}</p>
+                          <p className={`text-xs truncate ${textSecondary}`}>{project.category}</p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-medium text-sm truncate ${textPrimary}`}>{project.title}</p>
-                        <p className={`text-xs truncate ${textSecondary}`}>{project.category}</p>
+                      <div className="flex gap-1 ml-2">
+                        <Link
+                          to={`/admin/projects?edit=${project.id}`}
+                          className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg"
+                          title="Edit"
+                        >
+                          <FaEdit className="w-4 h-4" />
+                        </Link>
+                        <button
+                          onClick={(e) => handleDeleteProject(project.id, e)}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg"
+                          title="Delete"
+                        >
+                          <FaTrash className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   )

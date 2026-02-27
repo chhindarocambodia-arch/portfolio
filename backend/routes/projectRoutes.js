@@ -28,7 +28,7 @@ router.post(
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
     body('category').notEmpty().withMessage('Category is required'),
-    body('tech_stack').isArray().withMessage('Tech stack must be an array')
+    body('tech_stack').notEmpty().withMessage('Tech stack is required')
   ],
   createProject
 );
@@ -42,7 +42,7 @@ router.put(
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
     body('category').notEmpty().withMessage('Category is required'),
-    body('tech_stack').isArray().withMessage('Tech stack must be an array')
+    body('tech_stack').notEmpty().withMessage('Tech stack is required')
   ],
   updateProject
 );

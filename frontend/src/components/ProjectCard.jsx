@@ -20,10 +20,19 @@ const ProjectCard = ({ project, index = 0, dark = true }) => {
         }`}>
           {/* Image */}
           <div className="relative h-48 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-5xl opacity-30">🚀</span>
-            </div>
+            {project.image ? (
+              <>
+                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20"></div>
+              </>
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-5xl opacity-30">🚀</span>
+                </div>
+              </>
+            )}
             
             {/* Overlay on hover */}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">

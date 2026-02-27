@@ -97,9 +97,13 @@ const ProjectDetail = () => {
               className="lg:col-span-2"
             >
               <div className={`${bgCard} rounded-2xl mb-8`}>
-                <div className="h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl flex items-center justify-center">
-                  <span className="text-8xl">🚀</span>
-                </div>
+                {project.image ? (
+                  <img src={project.image} alt={project.title} className="w-full h-80 object-cover rounded-xl" />
+                ) : (
+                  <div className="h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl flex items-center justify-center">
+                    <span className="text-8xl">🚀</span>
+                  </div>
+                )}
               </div>
 
               <div className={bgCard}>

@@ -74,20 +74,21 @@ const Settings = () => {
     }
   }
 
-  const handleImageUpload = async (section, e) => {
+  const handleImageUpload = async (section, e, field = 'image') => {
     const file = e.target.files[0]
     if (!file) return
     
     setSaving(true)
     try {
-      const res = await settingsService.uploadImage(section, file)
+      const res = await settingsService.uploadImage(section, file, field)
       setSettings(prev => ({
         ...prev,
-        [section]: { ...prev[section], image: res.data.image }
+        [section]: { ...prev[section], [field]: res.data[field] || res.data.image }
       }))
-      toast.success('Image uploaded!')
+      toast.success(field === 'cvUrl' ? 'CV uploaded!' : 'Image uploaded!')
     } catch (error) {
-      toast.error('Failed to upload image')
+      console.error('Upload error:', error)
+      toast.error('Failed to upload file')
     } finally {
       setSaving(false)
     }
@@ -215,7 +216,7 @@ const Settings = () => {
                     <label className="btn-secondary cursor-pointer inline-flex items-center gap-2">
                       <FaImage />
                       Upload CV
-                      <input type="file" accept=".pdf,.doc,.docx" onChange={(e) => handleImageUpload('social', e)} className="hidden" />
+                      <input type="file" accept=".pdf,.doc,.docx" onChange={(e) => handleImageUpload('social', e, 'cvUrl')} className="hidden" />
                     </label>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">Upload PDF, DOC, or DOCX file</p>

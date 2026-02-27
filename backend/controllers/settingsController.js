@@ -61,25 +61,26 @@ export const updateSetting = async (req, res, next) => {
 export const uploadImage = async (req, res, next) => {
   try {
     const { section } = req.params;
+    const field = req.query.field || 'image';
     
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     
     const existing = await Settings.findBySection(section);
-    const imagePath = `/uploads/${req.file.filename}`;
+    const filePath = `/uploads/${req.file.filename}`;
     
-    if (existing?.data?.image) {
-      const oldPath = path.join(__dirname, '..', existing.data.image);
+    if (existing?.data?.[field]) {
+      const oldPath = path.join(__dirname, '..', existing.data[field]);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
       }
     }
     
-    const mergedData = { ...existing?.data, image: imagePath };
+    const mergedData = { ...existing?.data, [field]: filePath };
     await Settings.upsert(section, mergedData);
     
-    res.json({ image: imagePath });
+    res.json({ [field]: filePath });
   } catch (error) {
     next(error);
   }

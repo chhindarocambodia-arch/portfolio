@@ -51,12 +51,17 @@ export const createProject = async (req, res, next) => {
 
     const { title, description, category, tech_stack, live_url, github_url, featured } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    let techStackArray = [];
+    if (tech_stack) {
+      techStackArray = tech_stack.split(',').map(t => t.trim());
+    }
 
     const projectId = await Project.create({
       title,
       description,
       category,
-      tech_stack,
+      tech_stack: techStackArray,
       image,
       live_url,
       github_url,
@@ -88,11 +93,16 @@ export const updateProject = async (req, res, next) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    let techStackArray = [];
+    if (tech_stack) {
+      techStackArray = tech_stack.split(',').map(t => t.trim());
+    }
+
     await Project.update(req.params.id, {
       title,
       description,
       category,
-      tech_stack,
+      tech_stack: techStackArray,
       image: image || existingProject.image,
       live_url,
       github_url,

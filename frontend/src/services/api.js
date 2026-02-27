@@ -71,10 +71,10 @@ export const settingsService = {
       headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
     });
   },
-  uploadImage: (section, file) => {
+  uploadImage: (section, file, field = 'image') => {
     const formData = new FormData();
     formData.append('image', file);
-    return api.post(`/settings/${section}/image`, formData, {
+    return api.post(`/settings/${section}/image?field=${field}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   }

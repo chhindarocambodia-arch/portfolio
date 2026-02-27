@@ -57,7 +57,7 @@ const ProjectsManager = () => {
       data.append('title', formData.title)
       data.append('description', formData.description)
       data.append('category', formData.category)
-      data.append('tech_stack', JSON.stringify(formData.tech_stack.split(',').map(t => t.trim())))
+      data.append('tech_stack', formData.tech_stack)
       data.append('live_url', formData.live_url)
       data.append('github_url', formData.github_url)
       data.append('featured', formData.featured)
