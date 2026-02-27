@@ -53,6 +53,7 @@ db.exec(`
     name TEXT,
     category TEXT,
     icon TEXT,
+    proficiency INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
