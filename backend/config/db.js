@@ -22,6 +22,8 @@ db.exec(`
     username TEXT UNIQUE,
     email TEXT UNIQUE,
     password TEXT,
+    name TEXT,
+    role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
