@@ -1,15 +1,18 @@
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dbType = process.env.DB_TYPE || 'mysql';
 
+let pool;
+
 if (dbType === 'sqlite') {
-  const Database = require('better-sqlite3');
-  const path = require('path');
-  const { fileURLToPath } = require('url');
-  
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+  const Database = (await import('better-sqlite3')).default;
   
   const dbPath = path.join(__dirname, '..', 'database', 'portfolio.db');
   
@@ -66,7 +69,7 @@ if (dbType === 'sqlite') {
   
   console.log('SQLite database initialized');
   
-  const pool = {
+  pool = {
     execute(sql, params = []) {
       const stmt = db.prepare(sql);
       if (sql.trim().toUpperCase().startsWith('SELECT')) {
@@ -78,12 +81,10 @@ if (dbType === 'sqlite') {
       }
     }
   };
-  
-  export default pool;
 } else {
-  const mysql = require('mysql2/promise');
+  const mysql = (await import('mysql2/promise')).default;
   
-  const pool = mysql.createPool({
+  pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
@@ -93,6 +94,6 @@ if (dbType === 'sqlite') {
     connectionLimit: 10,
     queueLimit: 0
   });
-  
-  export default pool;
 }
+
+export default pool;
