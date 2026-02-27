@@ -5,3 +5,16 @@
 
 [build.environment]
   VITE_API_URL = "https://portfolio-backend-8x44.onrender.com"
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://portfolio-backend-8x44.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/uploads/*"
+  to = "https://portfolio-backend-8x44.onrender.com/uploads/:splat"
+  status = 200
+  force = true
