@@ -50,7 +50,7 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-  CREATE TABLE IF NOT EXISTS settings (
+  CREATE TABLE IF NOT EXISTS site_settings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     section TEXT UNIQUE,
     data TEXT,
