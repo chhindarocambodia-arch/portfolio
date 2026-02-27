@@ -17,7 +17,7 @@ export default class Skill {
   }
 
   static async create(skillData) {
-    const { name, category, icon, proficiency = 0 } = skillData;
+    const { name, category, icon = '', proficiency = 0 } = skillData;
     
     const [result] = await pool.execute(
       'INSERT INTO skills (name, category, icon, proficiency) VALUES (?, ?, ?, ?)',
