@@ -4,7 +4,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_API_URL = "https://portfolio-backend-8x44.onrender.com"
+  VITE_API_URL = "https://portfolio-backend-8x44.onrender.com/api"
   NODE_VERSION = "18"
 
 [[redirects]]
