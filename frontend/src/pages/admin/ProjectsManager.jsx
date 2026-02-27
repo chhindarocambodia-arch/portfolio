@@ -19,7 +19,7 @@ const ProjectsManager = () => {
     featured: false,
     image: null
   })
-  const [saving, setSaving] = useState(false)
+  const API_URL = import.meta.env.VITE_API_URL || ''
 
   useEffect(() => {
     fetchProjects()
@@ -180,7 +180,7 @@ const ProjectsManager = () => {
                 <div className="h-40 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/30 dark:to-accent-900/30 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
                   {project.image ? (
                     <img 
-                      src={project.image.startsWith('http') ? project.image : `http://localhost:5000${project.image}`} 
+                      src={project.image.startsWith('http') ? project.image : `${API_URL}${project.image}`} 
                       alt={project.title} 
                       className="w-full h-full object-cover" 
                     />

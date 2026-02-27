@@ -5,10 +5,12 @@ import { FaExternalLinkAlt, FaGithub, FaArrowRight } from 'react-icons/fa'
 const ProjectCard = ({ project, index = 0, dark = true }) => {
   const isDark = dark
 
+  const API_URL = import.meta.env.VITE_API_URL || ''
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null
     if (imagePath.startsWith('http')) return imagePath
-    return `http://localhost:5000${imagePath}`
+    return `${API_URL}${imagePath}`
   }
 
   return (

@@ -13,10 +13,12 @@ const Dashboard = () => {
   const [isDark, setIsDark] = useState(true)
   const navigate = useNavigate()
 
+  const API_URL = import.meta.env.VITE_API_URL || ''
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null
     if (imagePath.startsWith('http')) return imagePath
-    return `http://localhost:5000${imagePath}`
+    return `${API_URL}${imagePath}`
   }
 
   const handleDeleteProject = async (id, e) => {
