@@ -13,6 +13,12 @@ const Dashboard = () => {
   const [isDark, setIsDark] = useState(true)
   const navigate = useNavigate()
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null
+    if (imagePath.startsWith('http')) return imagePath
+    return `http://localhost:5000${imagePath}`
+  }
+
   const handleDeleteProject = async (id, e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -216,7 +222,7 @@ const Dashboard = () => {
                       <div className="flex items-center gap-3 flex-1">
                         <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center overflow-hidden">
                           {project.image ? (
-                            <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                            <img src={getImageUrl(project.image)} alt={project.title} className="w-full h-full object-cover" />
                           ) : (
                             <FaProjectDiagram className="w-5 h-5 text-white" />
                           )}

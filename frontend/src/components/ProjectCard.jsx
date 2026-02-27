@@ -5,6 +5,12 @@ import { FaExternalLinkAlt, FaGithub, FaArrowRight } from 'react-icons/fa'
 const ProjectCard = ({ project, index = 0, dark = true }) => {
   const isDark = dark
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null
+    if (imagePath.startsWith('http')) return imagePath
+    return `http://localhost:5000${imagePath}`
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,7 +28,7 @@ const ProjectCard = ({ project, index = 0, dark = true }) => {
           <div className="relative h-48 overflow-hidden">
             {project.image ? (
               <>
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                <img src={getImageUrl(project.image)} alt={project.title} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20"></div>
               </>
             ) : (

@@ -177,8 +177,16 @@ const ProjectsManager = () => {
                 transition={{ delay: index * 0.05 }}
                 className="card"
               >
-                <div className="h-40 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/30 dark:to-accent-900/30 rounded-xl mb-4 flex items-center justify-center">
-                  <FaImage className="w-12 h-12 text-primary-300" />
+                <div className="h-40 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/30 dark:to-accent-900/30 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                  {project.image ? (
+                    <img 
+                      src={project.image.startsWith('http') ? project.image : `http://localhost:5000${project.image}`} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover" 
+                    />
+                  ) : (
+                    <FaImage className="w-12 h-12 text-primary-300" />
+                  )}
                 </div>
                 
                 <div className="flex items-start justify-between mb-2">

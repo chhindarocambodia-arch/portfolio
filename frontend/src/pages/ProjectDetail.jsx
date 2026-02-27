@@ -10,6 +10,12 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(true)
   const [isDark, setIsDark] = useState(true)
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null
+    if (imagePath.startsWith('http')) return imagePath
+    return `http://localhost:5000${imagePath}`
+  }
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme) {
@@ -98,7 +104,7 @@ const ProjectDetail = () => {
             >
               <div className={`${bgCard} rounded-2xl mb-8`}>
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="w-full h-80 object-cover rounded-xl" />
+                  <img src={getImageUrl(project.image)} alt={project.title} className="w-full h-80 object-cover rounded-xl" />
                 ) : (
                   <div className="h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl flex items-center justify-center">
                     <span className="text-8xl">🚀</span>
