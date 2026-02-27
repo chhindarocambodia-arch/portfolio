@@ -15,7 +15,7 @@ const Home = () => {
     about: { name: '', title: '', bio: '', yearsExperience: 0, projectsCompleted: 0, clientsSatisfied: 0, image: '' },
     services: [],
     process: [],
-    social: { github: '', linkedin: '', facebook: '', instagram: '', tiktok: '', telegram: '', email: '', location: '' },
+    social: { github: '', linkedin: '', facebook: '', instagram: '', tiktok: '', telegram: '', email: '', location: '', cvUrl: '' },
     contact: { email: '', subject: '', message: '' }
   })
   const [loading, setLoading] = useState(true)

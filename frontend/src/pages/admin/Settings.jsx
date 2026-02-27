@@ -49,10 +49,17 @@ const Settings = () => {
   }
 
   const handleChange = (section, field, value) => {
-    setSettings(prev => ({
-      ...prev,
-      [section]: { ...prev[section], [field]: value }
-    }))
+    if (field === '') {
+      setSettings(prev => ({
+        ...prev,
+        [section]: value
+      }))
+    } else {
+      setSettings(prev => ({
+        ...prev,
+        [section]: { ...prev[section], [field]: value }
+      }))
+    }
   }
 
   const handleSave = async (section) => {
