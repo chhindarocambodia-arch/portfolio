@@ -18,3 +18,8 @@
   to = "https://portfolio-backend-8x44.onrender.com/uploads/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
